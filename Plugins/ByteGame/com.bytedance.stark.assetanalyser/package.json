@@ -1,0 +1,17 @@
+{
+	"displayName": "Stark Asset Analyser (Unity 2021.3)",
+	"name": "com.bytedance.stark.assetanalyser",
+	"version": "1.2.66",
+	"unity": "2021.3",
+	"unitySinceBuild": "2021.3",
+	"unityUntilBuild": "*",
+	"description": "版本兼容性: Unity 2021.3 ~ *\nStark Asset Analyser 小包化转化工具\n推荐使用 Unity 2019.4.8 LTS 或 2021.3.x LTS",
+	"keywords": [],
+	"dependencies": {
+		"com.bytedance.starkminiunity": "1.5.27"
+	},
+	"category": "Libraries",
+	"links": [
+  	{ "label": "Document", "url": "https://bytedance.feishu.cn/docs/doccniQnKKrjv4wJH0MimKcWMwg" }
+	]
+}

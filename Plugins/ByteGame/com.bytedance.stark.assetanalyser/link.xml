@@ -1,0 +1,12 @@
+<linker>
+  <assembly fullname="UnityEngine.CoreModule">
+    <namespace fullname="UnityEngine" preserve="all"/>
+  </assembly>
+  <assembly fullname="UnityEngine" preserve="all"/>
+  <assembly fullname="UnityEngine.UIModule" preserve="all"/>
+  <assembly fullname="UnityEngine.AudioModule" preserve="all"/>
+  <assembly fullname="UnityEngine.ParticleSystemModule" preserve="all"/>
+  <assembly fullname="UnityEngine.AnimationModule" preserve="all"/>
+  <assembly fullname="UnityEngine.PhysicsModule" preserve="all"/>
+  <assembly fullname="UnityEngine.Physics2DModule" preserve="all"/>
+</linker>

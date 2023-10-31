@@ -1,0 +1,644 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>assetanalyser</name>
+    </assembly>
+    <members>
+        <member name="P:Stark.AssetAnalyser.AssetAnalysis.CurrentFilterFlag">
+            <summary>
+            <para>当前Editor工程中配置的FilterFlag，表示要处理哪些种类的Asset。</para>
+            参考：<see cref="M:Stark.AssetAnalyser.AssetAnalysis.IsFilterTypeSelected(Stark.AssetAnalyser.Proxy.AssetProxyType)"/>
+            </summary>
+        </member>
+        <member name="P:Stark.AssetAnalyser.AssetAnalysis.ImageTypesFilterFlag">
+            <summary>
+            一个预定义好的图片类型FilterFlag，处理图片类的Assets，包括：Sprite，Texture，Material 等等，参考：<see cref="F:Stark.AssetAnalyser.AssetAnalysis.ImageProxyTypes"/>
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.IsFilterTypeSelected(Stark.AssetAnalyser.Proxy.AssetProxyType)">
+            <summary>
+            判断当前工程中配置的FilterFlag中，是否选择启用了某个proxyType.
+            </summary>
+            <param name="proxyType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.IsFilterTypeSelected(System.Int32,Stark.AssetAnalyser.Proxy.AssetProxyType)">
+            <summary>
+            判断指定filterFlag中，是否选择启用了某个proxyType.
+            </summary>
+            <param name="filterFlag"></param>
+            <param name="proxyType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.BatchModeConvert(System.String,System.Boolean)">
+            <summary>
+            <para>批量增量转化，使用当前工程中配置的FilterFlag处理类型。</para>
+            当前FilterFlag参考：<see cref="P:Stark.AssetAnalyser.AssetAnalysis.CurrentFilterFlag"/>
+            </summary>
+            <param name="sessionName">指定一个依赖分析工具、批量转化工具的 Session Path List 中的Session名</param>
+            <param name="isIncremental">是否增量、自动判断Md5，否则全量转化无视Md5</param>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.BatchModeConvert(System.String,System.Int32,System.Boolean)">
+            <summary>
+            <para>批量增量转化，允许指定filterFlag处理类型。</para>
+            <para>
+            * 当前FilterFlag参考：<see cref="P:Stark.AssetAnalyser.AssetAnalysis.CurrentFilterFlag"/>  <br/>
+            * 图片FilterFlag参考：<see cref="P:Stark.AssetAnalyser.AssetAnalysis.ImageTypesFilterFlag"/>  <br/>
+            * 指定自定义FilterFlag参考：<see cref="M:Stark.AssetAnalyser.AssetAnalysis.MultiTypesFlag(Stark.AssetAnalyser.Proxy.AssetProxyType[])"/>  <br/>
+            </para>
+            </summary>
+            <param name="sessionName">指定一个依赖分析工具、批量转化工具的 Session Path List 中的Session名</param>
+            <param name="filterFlag">指定filterFlag</param>
+            <param name="isIncremental">是否增量、自动判断Md5，否则全量转化无视Md5</param>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.MultiTypesFlag(Stark.AssetAnalyser.Proxy.AssetProxyType[])">
+            <summary>
+            创建一个自定义filterFlag，指定多个要处理的AssetProxyType类型。
+            参考：<see cref="T:Stark.AssetAnalyser.Proxy.AssetProxyType"/>
+            </summary>
+            <param name="proxyTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.MultiTypesFlag(System.Collections.Generic.ICollection{Stark.AssetAnalyser.Proxy.AssetProxyType})">
+            <summary>
+            创建一个自定义filterFlag，指定多个要处理的AssetProxyType类型。
+            参考：<see cref="T:Stark.AssetAnalyser.Proxy.AssetProxyType"/>
+            </summary>
+            <param name="proxyTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.StarkMini#Editor#IAssetProcessTool#FindProcessCommand(System.String)">
+            <summary>
+            获取指定的处理命令
+            </summary>
+            <returns></returns>
+            Require StarkMini 1.5.4
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.IsProxiableAsset(System.String)">
+            <summary>
+            是否可被Proxy替换的资源，用于ProxyViewer白名单管理、转化生成低清proxy资源、以及RuntimeAssetConfig生成资源映射。
+            注：是最终真实被proxy替换、低高清转化的资源。例如：各种图片纹理。
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetAnalysis.IsProcessable(System.String)">
+            <summary>
+            是否可转化处理的资源，用于批量转化工具分析转化。
+            注：包括引用了其它可被proxy替换的资源、因而作为引用者需要转化的资源。例如：Scene、Prefab这类容器资源。
+            </summary>
+        </member>
+        <member name="T:Stark.AssetAnalyser.AssetAnalyserEditor">
+            <summary>
+            Editor工具：检查资源依赖
+            </summary>
+        </member>
+        <member name="P:Stark.AssetAnalyser.AssetAnalyserEditor.FilterFlag">
+            <summary>
+            <para>要处理哪些种类的资产。第 i 位指示 AssetProxyType 中第 i 个枚举量</para>
+            另参考: <see cref="P:Stark.AssetAnalyser.AssetAnalysis.CurrentFilterFlag"/>
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.EditorAssetConfig.AddAssetGuidsToEnableList(System.Collections.Generic.ICollection{System.String},System.Boolean,System.Boolean)">
+            <summary>
+            将一批资源、或目录，添加到 Proxy EnableList
+            </summary>
+            <param name="guids">资源guid列表</param>
+            <param name="recursiveFolders">是否递归遍历目录</param>
+            <param name="saveNow">是否要立即保存</param>
+            <returns>设置改变的资源数</returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.EditorAssetConfig.RemoveAssetGuidsFromEnableList(System.Collections.Generic.ICollection{System.String},System.Boolean,System.Boolean)">
+            <summary>
+            将一批资源、或目录，从 Proxy EnableList 移除
+            </summary>
+            <param name="guids">资源guid列表</param>
+            <param name="recursiveFolders">是否递归遍历目录</param>
+            <param name="saveNow">是否要立即保存</param>
+            <returns>设置改变的资源数</returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.EditorAssetConfig.SetAssetGuidsToEnableList(System.Collections.Generic.ICollection{System.String},System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            设置一批资源、或目录到 Proxy EnableList
+            </summary>
+            <param name="guids">资源guid列表</param>
+            <param name="isAdd">是否添加，否则删除</param>
+            <param name="recursiveFolders">是否递归遍历目录</param>
+            <param name="saveNow">是否要立即保存</param>
+            <returns>设置改变的资源数</returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.EditorAssetConfig.SetFolderToEnableList(System.String,System.Boolean)">
+            <summary>
+            设置文件夹到 Proxy EnableList
+            </summary>
+            <param name="path"></param>
+            <param name="isAdd"></param>
+            <returns>设置改变的资源数</returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.EditorAssetConfig.SaveEnableListChanges">
+            <summary>
+            保存 Proxy EnableList 设置
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.IL.Extensions.InsertBefore(Stark.Mono.Cecil.Cil.MethodBody,Stark.Mono.Cecil.Cil.Instruction,Stark.Mono.Cecil.Cil.Instruction[])">
+            <summary>
+            语句前插入Instruction, 并返回当前语句
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.IL.Extensions.InsertAfter(Stark.Mono.Cecil.Cil.MethodBody,Stark.Mono.Cecil.Cil.Instruction,Stark.Mono.Cecil.Cil.Instruction[])">
+            <summary>
+            语句后插入Instruction, 并返回当前语句
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.IL.ILCodeInjector.HandleMaterialSetTexture(Stark.Mono.Cecil.Cil.Instruction,Stark.Mono.Cecil.MethodReference)">
+            <summary>
+            处理特殊的注入逻辑， 针对Material.SetTexture有2个参数
+            </summary>
+            <param name="instruction"></param>
+            <param name="method"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.IL.ILCodeInjector.SkipValue(Stark.Mono.Cecil.Cil.Instruction)">
+            <summary>
+            跳过这个值指令
+            </summary>
+            <param name="cur"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.IL.ILCodeInjector.IsKeyResourceType(Stark.Mono.Cecil.TypeReference)">
+            <summary>
+            是否是要处理的资源类型
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.IL.ILCodeInjector.IsKeyObjectType(Stark.Mono.Cecil.TypeReference)">
+            <summary>
+            是否是要处理的对象，如
+            * Unity.UI.Image
+            </summary>
+            <param name="typeReference"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.IL.ILCodeInjector.IsResourcesLoadMethod(Stark.Mono.Cecil.MethodReference)">
+            <summary>
+            是否是 Resources.Load
+            </summary>
+            <param name="method"></param>
+            <returns></returns>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.Input">
+            <summary>
+            对于 GO ：被处理的 GameObject；对于 SO：ScriptableProxyConfig
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.Target">
+            <summary>
+            对于 GO：被处理的 GameObject 的 Component；对于 SO：被处理的 ScriptableObject
+            </summary>
+        </member>
+        <member name="T:Stark.AssetAnalyser.ProcessContext.AssetItem">
+            <summary>
+            代理资源的信息
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.AssetItem.Type">
+            <summary>
+            代理资源的类型
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.AssetItem.Asset">
+            <summary>
+            原资源的引用
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.AssetItem.Target">
+            <summary>
+            被代理的组件
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.AssetItem.Field">
+            <summary>
+            组件上的属性名
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.NGUIAssetItem.Component">
+            <summary>
+            被代理的组件
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.NGUIAssetItem.OriginalAtlas">
+            <summary>
+            原图集的引用
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext.NGUIAssetItem.TextureSize">
+            <summary>
+            原图集的大小
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProcessContext._dataList">
+            <summary>
+            此上下文处理过的所有代理资源的结果
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProcessContext.Cleanup">
+            <summary>
+             将上下文结果保存到 Container 中并清理上下文
+            </summary>
+            <returns>处理对象Input是否发生变化</returns>
+        </member>
+        <member name="F:Stark.AssetAnalyser.THashAlgorithmInstances`1.instance">
+            <summary>
+            线程静态变量。
+            即：这个变量在每个线程中都是唯一的。
+            再结合泛型类实现了该变量在不同泛型或不同的线程先的变量都是唯一的。
+            这样做的目的是为了避开多线程问题。
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.THashAlgorithmInstances`1.Create">
+            <summary>
+            寻找 THashAlgorithm 类型下的 Create 静态方法，并执行它。
+            如果没找到，则执行 Activator.CreateInstance 调用构造方法创建实例。
+            如果 Activator.CreateInstance 方法执行失败，它会抛出异常。
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyUtil.IsInEnableList(System.String)">
+            <summary>
+            判断是否在 Proxy EnableList
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProxyUtil.md5ChangedSet">
+            <summary>
+            内容元素为 asset path
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProxyUtil.md5UnchangedSet">
+            <summary>
+            内容元素为 asset path
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProxyUtil.enableModifySet">
+            <summary>
+            内容元素为 asset path
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ProxyUtil.md5AllRecordsSet">
+            <summary>
+            内容元素为 asset path
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyUtil.GetTransformPath(UnityEngine.Transform,System.Boolean)">
+            <summary>
+            transform path of GameObject
+            </summary>
+        </member>
+        <member name="P:Stark.AssetAnalyser.AssetProxyContainer.IsDownloadedLoadBySync">
+            <summary>
+            obsolte: use `AssetProxyManager.<see cref="P:Stark.AssetAnalyser.ProxyResourceManager.IsDownloadedLoadBySync"/>` instead
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetProxyContainer.Add(Stark.AssetAnalyser.Proxy.AssetProxyType,UnityEngine.AddressableAssets.AssetReference,UnityEngine.Object,System.String,UnityEngine.Component,UnityEngine.ScriptableObject,System.Nullable{UnityEngine.Vector2})">
+            <summary>
+            向 container 中添加一条代理记录
+            </summary>
+            <param name="type">被代理的资源的类型</param>
+            <param name="asset">原资源的引用</param>
+            <param name="c">代理的目标组件</param>
+            <param name="fieldName">组件上的属性名称</param>
+            <returns>这次添加是否造成了数据更新</returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetProxyContainer.Cleanup">
+            <summary>
+            清理所有无效的Proxy
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetProxyContainer.Load">
+            <summary>
+            加载资源
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetProxyContainer.LoadAndSetup">
+            <summary>
+            加载资源并初始化
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.Proxy.AssetProxy`1.IsSrcAsset">
+            <summary>
+            判断下载开始时刻和完成时刻的资源是否相同，如果不同，则表示下载已经完成的资源没有意义了。
+            目前的实现只判断了名字
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.type">
+            <summary>
+            代理资源的类型
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.reference">
+            <summary>
+            原资源的引用
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.target">
+            <summary>
+            被代理的组件
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.field">
+            <summary>
+            被代理的组件的属性名称
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.sourceAsset">
+            <summary>
+            被代理的资源名，可能是subobjectname
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.NGUIData">
+            <summary>
+            支持NGUI需要的字段
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.MaterialProxy.method">
+             <summary>
+            全局的SetTexture方法，节省每次获取method的开销
+             </summary>
+        </member>
+        <member name="T:Stark.AssetAnalyser.Proxy.NGUIProxy">
+            <summary>
+            仅对material做特殊处理，因为material是target的嵌套类型
+            </summary>
+        </member>
+        <member name="T:Stark.AssetAnalyser.AssetProxyAAInitializeMode">
+            <summary>
+            AA InitializeMode 初始化模式，是否自动调用 Initialize 异步、或同步、或是否必须先完成 InitializeSucceeded
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.DefaultAsync">
+            <summary>
+            默认异步，自动触发 InitializeAsync 异步初始化； 初始化成功后，允许使用同步接口。
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.AutoInitializeSync">
+            <summary>
+            自动触发 InitializeSync 同步初始化。
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.RequireInitializeSucceeded">
+            <summary>
+            必须由外部逻辑先完成 Initialize Succeeded 才执行Proxy资源加载逻辑。
+            </summary>
+        </member>
+        <member name="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode">
+            <summary>
+            设置 AA InitializeMode 初始化模式，是否自动调用 Initialize 异步、或同步、或是否必须先完成 InitializeSucceeded.<br/>
+            默认: AutoInitializeAsync 自动依赖异步初始化。
+            </summary>
+        </member>
+        <member name="P:Stark.AssetAnalyser.ProxyResourceManager.IsDownloadedLoadBySync">
+            <summary>
+            是否已下载的用同步加载
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.ValidateAAInitialize">
+            <summary>
+            校验 AA 初始化.  <br/>
+            参考：由 <see cref="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode"/> 的模式控制。
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.ValidateIsAssetLoadable(Stark.AssetAnalyser.Proxy.IAssetProxy)">
+            <summary>
+            校验 asset proxy 可被加载.  <br/>
+            参考：由 <see cref="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode"/> 的模式控制。
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.ValidateAASyncAPI">
+            <summary>
+            校验 AA 同步接口是否可用.  <br/>
+            举例：如果<see cref="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode"/>为<see cref="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.DefaultAsync"/>、或<see cref="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.RequireInitializeSucceeded"/>，
+            则必须 AA 初始化成功后才可用（返回 true）.  <br/>
+            参考：由 <see cref="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode"/> 的模式控制。
+            </summary>
+            <returns>bool 是否可用</returns>
+        </member>
+        <member name="P:Stark.AssetAnalyser.ProxyResourceManager.IsAAInitializeSucceeded">
+            <summary>
+            是否 AA Initialize Succeeded
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.LoadAsset(Stark.AssetAnalyser.Proxy.IAssetProxy,System.Boolean)">
+            <summary>
+            <para>通过proxy数据加载资源。</para>
+            <para>会判断是否已下载完成，如果是那么立即加载资源对象；如果不是，那么加入后台下载队列。最终会将加载得到的Asset设置到目标target.</para>
+            </summary>
+            <param name="assetProxy"></param>
+            <param name="isPriorityHigh">是否下载优先级高。默认 true.</param>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.LoadAssets(System.Collections.Generic.IList{Stark.AssetAnalyser.Proxy.IAssetProxy},System.Boolean)">
+            <summary>
+            通过一批proxy数据加载资源
+            </summary>
+            <param name="assetProxies"></param>
+            <param name="isForegroundUseNow">是否为前台立即使用，如果true那么下载优先级高。默认 true.</param>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.GetTransformPath(UnityEngine.Transform,System.Boolean)">
+            <summary>
+            transform path of GameObject
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ReflectionUtils.SettersCache">
+            <summary>
+            setter 缓存
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ReflectionUtils.GettersCache">
+            <summary>
+            setter 缓存
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ReflectionUtils.IsList(System.Object)">
+            <summary>
+            设置对象的属性值
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.SkyboxMaterialTexData.m_texID">
+            <summary>
+            材质中的texid
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.SkyboxMaterialTexData.m_assetRef">
+            <summary>
+            要下载的资源
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.SkyboxMaterialTexData.m_MatName">
+            <summary>
+            材质的名称
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.RuntimeAssetConfig.ManualSetInstance(Stark.AssetAnalyser.RuntimeAssetConfig,System.Boolean)">
+            <summary>
+            手动设置RuntimeAssetConfig，主要为了AssetBundle的情况使用
+            </summary>
+            <param name="config"></param>
+            <param name="additive"></param>
+        </member>
+        <member name="M:Stark.AssetAnalyser.RuntimeAssetConfig.SetRuntimeAsset(System.String,UnityEngine.Object,System.Boolean)">
+            <summary>
+            运行时手动设置Asset
+            </summary>
+            <param name="path"></param>
+            <param name="assetObj"></param>
+            <param name="parseDependency"></param>
+        </member>
+        <member name="T:Stark.Microsoft.Cci.Pdb.ILocalScope">
+            <summary>
+            A range of CLR IL operations that comprise a lexical scope, specified as an IL offset and a length.
+            </summary>
+        </member>
+        <member name="P:Stark.Microsoft.Cci.Pdb.ILocalScope.Offset">
+            <summary>
+            The offset of the first operation in the scope.
+            </summary>
+        </member>
+        <member name="P:Stark.Microsoft.Cci.Pdb.ILocalScope.Length">
+            <summary>
+            The length of the scope. Offset+Length equals the offset of the first operation outside the scope, or equals the method body length.
+            </summary>
+        </member>
+        <member name="T:Stark.Microsoft.Cci.Pdb.INamespaceScope">
+            <summary>
+            A description of the lexical scope in which a namespace type has been nested. This scope is tied to a particular
+            method body, so that partial types can be accommodated.
+            </summary>
+        </member>
+        <member name="P:Stark.Microsoft.Cci.Pdb.INamespaceScope.UsedNamespaces">
+            <summary>
+            Zero or more used namespaces. These correspond to using clauses in C#.
+            </summary>
+        </member>
+        <member name="T:Stark.Microsoft.Cci.Pdb.IUsedNamespace">
+            <summary>
+            A namespace that is used (imported) inside a namespace scope.
+            </summary>
+        </member>
+        <member name="P:Stark.Microsoft.Cci.Pdb.IUsedNamespace.Alias">
+            <summary>
+            An alias for a namespace. For example the "x" of "using x = y.z;" in C#. Empty if no alias is present.
+            </summary>
+        </member>
+        <member name="P:Stark.Microsoft.Cci.Pdb.IUsedNamespace.NamespaceName">
+            <summary>
+            The name of a namepace that has been aliased.  For example the "y.z" of "using x = y.z;" or "using y.z" in C#.
+            </summary>
+        </member>
+        <member name="T:Stark.Microsoft.Cci.Pdb.IName">
+            <summary>
+            The name of an entity. Typically name instances come from a common pool. Within the pool no two distinct instances will have the same Value or UniqueKey.
+            </summary>
+        </member>
+        <member name="P:Stark.Microsoft.Cci.Pdb.IName.UniqueKey">
+            <summary>
+            An integer that is unique within the pool from which the name instance has been allocated. Useful as a hashtable key.
+            </summary>
+        </member>
+        <member name="P:Stark.Microsoft.Cci.Pdb.IName.UniqueKeyIgnoringCase">
+            <summary>
+            An integer that is unique within the pool from which the name instance has been allocated. Useful as a hashtable key.
+            All name instances in the pool that have the same string value when ignoring the case of the characters in the string
+            will have the same key value.
+            </summary>
+        </member>
+        <member name="P:Stark.Microsoft.Cci.Pdb.IName.Value">
+            <summary>
+            The string value corresponding to this name.
+            </summary>
+        </member>
+        <member name="T:Stark.Microsoft.Cci.Pdb.PdbConstant">
+            <summary />
+        </member>
+        <member name="F:Stark.Microsoft.Cci.Pdb.PdbFile.BasicLanguageGuid">
+            <summary>
+            GUID of the Basic source language.
+            </summary>
+        </member>
+        <member name="F:Stark.Microsoft.Cci.Pdb.PdbFunction.visualBasicScopesAdjusted">
+            <summary>
+            Flag saying whether the method has been identified as a product of VB compilation using
+            the legacy Windows PDB symbol format, in which case scope ends need to be shifted by 1
+            due to different semantics of scope limits in VB and C# compilers.
+            </summary>
+        </member>
+        <member name="M:Stark.Microsoft.Cci.Pdb.PdbFunction.AdjustVisualBasicScopes">
+            <summary>
+            When the Windows PDB reader identifies a PdbFunction as having 'Basic' as its source language,
+            it calls this method which adjusts all scopes by adding 1 to their lengths to compensate
+            for different behavior of VB vs. the C# compiler w.r.t. emission of scope info.
+            </summary>
+        </member>
+        <member name="M:Stark.Microsoft.Cci.Pdb.PdbFunction.AdjustVisualBasicScopes(Stark.Microsoft.Cci.Pdb.PdbScope[])">
+            <summary>
+            Recursively update the entire scope tree by adding 1 to the length of each scope.
+            </summary>
+        </member>
+        <member name="T:Stark.Microsoft.Cci.Pdb.PdbInfo">
+            <summary>
+            This class represents the information read from a PDB file (both legacy Windows and Portable).
+            </summary>
+        </member>
+        <member name="F:Stark.Microsoft.Cci.Pdb.PdbInfo.Functions">
+            <summary>
+            Enumeration of per-function information contained in the PDB file.
+            </summary>
+        </member>
+        <member name="F:Stark.Microsoft.Cci.Pdb.PdbInfo.TokenToSourceMapping">
+            <summary>
+            Mapping from tokens to source files and line numbers.
+            </summary>
+        </member>
+        <member name="F:Stark.Microsoft.Cci.Pdb.PdbInfo.SourceServerData">
+            <summary>
+            Source server data information.
+            </summary>
+        </member>
+        <member name="F:Stark.Microsoft.Cci.Pdb.PdbInfo.Age">
+            <summary>
+            Age of the PDB file is used to match the PDB against the PE binary.
+            </summary>
+        </member>
+        <member name="F:Stark.Microsoft.Cci.Pdb.PdbInfo.Guid">
+            <summary>
+            GUID of the PDB file is used to match the PDB against the PE binary.
+            </summary>
+        </member>
+        <member name="F:Stark.Microsoft.Cci.Pdb.PdbInfo.SourceLinkData">
+            <summary>
+            Source link data information.
+            </summary>
+        </member>
+        <member name="F:Stark.Mono.Cecil.TypeComparisonMode.SignatureOnlyLoose">
+            <summary>
+            Types can be in different assemblies, as long as the module, assembly, and type names match they will be considered equal
+            </summary>
+        </member>
+        <member name="T:ILEditor.NoSymbolWriterProvider">
+            <summary>
+            不做任何事情的 ISymbolWriterProvider
+            </summary>
+        </member>
+        <member name="F:ScriptableProxyConfig.assetProxyMap">
+            <summary>
+            【被代理的 SO 的路径】 到 （【SO 的 属性名】到【代理信息数据结构】的映射）的映射。
+            </summary>
+        </member>
+        <member name="M:ScriptableProxyConfig.Add(Stark.AssetAnalyser.Proxy.AssetProxyData)">
+            <summary>
+            向map中添加记录。会根据忽略名单移除 / 添加数据
+            </summary>
+            <param name="data"></param>
+        </member>
+    </members>
+</doc>

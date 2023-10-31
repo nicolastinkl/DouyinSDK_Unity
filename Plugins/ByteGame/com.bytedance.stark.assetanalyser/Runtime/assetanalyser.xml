@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>assetanalyser</name>
+    </assembly>
+    <members>
+        <member name="P:Stark.AssetAnalyser.AssetProxyContainer.IsDownloadedLoadBySync">
+            <summary>
+            obsolte: use `AssetProxyManager.<see cref="P:Stark.AssetAnalyser.ProxyResourceManager.IsDownloadedLoadBySync"/>` instead
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetProxyContainer.Cleanup">
+            <summary>
+            清理所有无效的Proxy
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetProxyContainer.Load">
+            <summary>
+            加载资源
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.AssetProxyContainer.LoadAndSetup">
+            <summary>
+            加载资源并初始化
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Stark.AssetAnalyser.Proxy.AssetProxy`1.IsSrcAsset">
+            <summary>
+            判断下载开始时刻和完成时刻的资源是否相同，如果不同，则表示下载已经完成的资源没有意义了。
+            目前的实现只判断了名字
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.type">
+            <summary>
+            代理资源的类型
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.reference">
+            <summary>
+            原资源的引用
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.target">
+            <summary>
+            被代理的组件
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.field">
+            <summary>
+            被代理的组件的属性名称
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.sourceAsset">
+            <summary>
+            被代理的资源名，可能是subobjectname
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.AssetProxyData.NGUIData">
+            <summary>
+            支持NGUI需要的字段
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.Proxy.MaterialProxy.method">
+             <summary>
+            全局的SetTexture方法，节省每次获取method的开销
+             </summary>
+        </member>
+        <member name="T:Stark.AssetAnalyser.Proxy.NGUIProxy">
+            <summary>
+            仅对material做特殊处理，因为material是target的嵌套类型
+            </summary>
+        </member>
+        <member name="T:Stark.AssetAnalyser.AssetProxyAAInitializeMode">
+            <summary>
+            AA InitializeMode 初始化模式，是否自动调用 Initialize 异步、或同步、或是否必须先完成 InitializeSucceeded
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.DefaultAsync">
+            <summary>
+            默认异步，自动触发 InitializeAsync 异步初始化； 初始化成功后，允许使用同步接口。
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.AutoInitializeSync">
+            <summary>
+            自动触发 InitializeSync 同步初始化。
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.RequireInitializeSucceeded">
+            <summary>
+            必须由外部逻辑先完成 Initialize Succeeded 才执行Proxy资源加载逻辑。
+            </summary>
+        </member>
+        <member name="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode">
+            <summary>
+            设置 AA InitializeMode 初始化模式，是否自动调用 Initialize 异步、或同步、或是否必须先完成 InitializeSucceeded.<br/>
+            默认: AutoInitializeAsync 自动依赖异步初始化。
+            </summary>
+        </member>
+        <member name="P:Stark.AssetAnalyser.ProxyResourceManager.IsDownloadedLoadBySync">
+            <summary>
+            是否已下载的用同步加载
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.ValidateAAInitialize">
+            <summary>
+            校验 AA 初始化.  <br/>
+            参考：由 <see cref="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode"/> 的模式控制。
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.ValidateIsAssetLoadable(Stark.AssetAnalyser.Proxy.IAssetProxy)">
+            <summary>
+            校验 asset proxy 可被加载.  <br/>
+            参考：由 <see cref="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode"/> 的模式控制。
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.ValidateAASyncAPI">
+            <summary>
+            校验 AA 同步接口是否可用.  <br/>
+            举例：如果<see cref="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode"/>为<see cref="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.DefaultAsync"/>、或<see cref="F:Stark.AssetAnalyser.AssetProxyAAInitializeMode.RequireInitializeSucceeded"/>，
+            则必须 AA 初始化成功后才可用（返回 true）.  <br/>
+            参考：由 <see cref="P:Stark.AssetAnalyser.ProxyResourceManager.AAInitializeMode"/> 的模式控制。
+            </summary>
+            <returns>bool 是否可用</returns>
+        </member>
+        <member name="P:Stark.AssetAnalyser.ProxyResourceManager.IsAAInitializeSucceeded">
+            <summary>
+            是否 AA Initialize Succeeded
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.LoadAsset(Stark.AssetAnalyser.Proxy.IAssetProxy,System.Boolean)">
+            <summary>
+            <para>通过proxy数据加载资源。</para>
+            <para>会判断是否已下载完成，如果是那么立即加载资源对象；如果不是，那么加入后台下载队列。最终会将加载得到的Asset设置到目标target.</para>
+            </summary>
+            <param name="assetProxy"></param>
+            <param name="isPriorityHigh">是否下载优先级高。默认 true.</param>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.LoadAssets(System.Collections.Generic.IList{Stark.AssetAnalyser.Proxy.IAssetProxy},System.Boolean)">
+            <summary>
+            通过一批proxy数据加载资源
+            </summary>
+            <param name="assetProxies"></param>
+            <param name="isForegroundUseNow">是否为前台立即使用，如果true那么下载优先级高。默认 true.</param>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ProxyResourceManager.GetTransformPath(UnityEngine.Transform,System.Boolean)">
+            <summary>
+            transform path of GameObject
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ReflectionUtils.SettersCache">
+            <summary>
+            setter 缓存
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.ReflectionUtils.GettersCache">
+            <summary>
+            setter 缓存
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.ReflectionUtils.IsList(System.Object)">
+            <summary>
+            设置对象的属性值
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.SkyboxMaterialTexData.m_texID">
+            <summary>
+            材质中的texid
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.SkyboxMaterialTexData.m_assetRef">
+            <summary>
+            要下载的资源
+            </summary>
+        </member>
+        <member name="F:Stark.AssetAnalyser.SkyboxMaterialTexData.m_MatName">
+            <summary>
+            材质的名称
+            </summary>
+        </member>
+        <member name="M:Stark.AssetAnalyser.RuntimeAssetConfig.ManualSetInstance(Stark.AssetAnalyser.RuntimeAssetConfig,System.Boolean)">
+            <summary>
+            手动设置RuntimeAssetConfig，主要为了AssetBundle的情况使用
+            </summary>
+            <param name="config"></param>
+            <param name="additive"></param>
+        </member>
+        <member name="M:Stark.AssetAnalyser.RuntimeAssetConfig.SetRuntimeAsset(System.String,UnityEngine.Object,System.Boolean)">
+            <summary>
+            运行时手动设置Asset
+            </summary>
+            <param name="path"></param>
+            <param name="assetObj"></param>
+            <param name="parseDependency"></param>
+        </member>
+    </members>
+</doc>
